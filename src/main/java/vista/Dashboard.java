@@ -8,8 +8,14 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
+import modelo.Crud;
+import modelo.Vuelo;
 import org.w3c.dom.css.RGBColor;
 import vista.views.*;
 
@@ -51,7 +57,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void InitContent(){
         ShowPanel(new Bienvenida());
     }
-    public void ShowPanel(JPanel p){
+    public static void ShowPanel(JPanel p){
         p.setSize(883, 650);
         p.setLocation(0,0);
        
@@ -177,10 +183,6 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(menuLayout.createSequentialGroup()
                 .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(menuLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 43, Short.MAX_VALUE))
-                    .addGroup(menuLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(origenLB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -193,12 +195,15 @@ public class Dashboard extends javax.swing.JFrame {
                     .addGroup(menuLayout.createSequentialGroup()
                         .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(menuLayout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(menuLayout.createSequentialGroup()
                                 .addGap(22, 22, 22)
                                 .addComponent(fechaSalidaFT, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(menuLayout.createSequentialGroup()
                                 .addGap(20, 20, 20)
                                 .addComponent(fechaRegresoFT, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 26, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         menuLayout.setVerticalGroup(
@@ -226,7 +231,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(regresoLB)
                 .addGap(9, 9, 9)
                 .addComponent(fechaRegresoFT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(buscarBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(114, 114, 114))
         );
@@ -242,7 +247,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 644, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout BackgroundLayout = new javax.swing.GroupLayout(Background);
@@ -285,6 +290,18 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void buscarBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarBTNActionPerformed
         ShowPanel(new Principal());
+        String origen = (String) origenCB.getSelectedItem();
+        String destino = (String) destinoCB.getSelectedItem();
+        Crud c = new Crud();
+        List<Vuelo> lista;
+        
+        DefaultTableModel model = (DefaultTableModel) Principal.jTableVuelos.getModel();
+        
+        try {
+            c.obtenerVuelos().forEach(x -> model.addRow(new Object[]{x.getIdVuelo(), x.getOrigen(), x.getDestino(), x.getFechaSalida(), x.getFechaLlegada()}));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_buscarBTNActionPerformed
 
     private void fechaSalidaFTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fechaSalidaFTActionPerformed
@@ -313,7 +330,7 @@ public class Dashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Background;
     private javax.swing.JButton buscarBTN;
-    private javax.swing.JPanel content;
+    private static javax.swing.JPanel content;
     private javax.swing.JComboBox<String> destinoCB;
     private javax.swing.JLabel destinoLB;
     private javax.swing.JFormattedTextField fechaRegresoFT;
